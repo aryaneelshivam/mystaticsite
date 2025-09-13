@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone } from 'lucide-react';
+import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight } from 'lucide-react';
 import { WebsiteConfig, SectionType } from '@/types/website';
 import { NavbarEditor } from './editors/NavbarEditor';
 import { HeroEditor } from './editors/HeroEditor';
@@ -83,6 +83,15 @@ export function WebsiteBuilder() {
   const [config, setConfig] = useState<WebsiteConfig>(defaultConfig);
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    navbar: false,
+    hero: false,
+    announcement: false,
+    scrollingText: false,
+    cards: false,
+    textArea: false,
+    footer: false
+  });
 
   const updateConfig = (section: keyof WebsiteConfig, updates: any) => {
     setConfig(prev => ({
@@ -114,6 +123,13 @@ export function WebsiteBuilder() {
       footer: 'Footer'
     };
     return titles[sectionType];
+  };
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
   };
 
   return (
@@ -219,87 +235,171 @@ export function WebsiteBuilder() {
               </CardContent>
             </Card>
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Navigation Bar</CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('navbar')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">Navigation Bar</CardTitle>
+                  {expandedSections.navbar ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
               </CardHeader>
-              <CardContent>
-                <NavbarEditor
-                  config={config.navbar}
-                  onChange={(updates) => updateConfig('navbar', updates)}
-                />
-              </CardContent>
+              {expandedSections.navbar && (
+                <CardContent>
+                  <NavbarEditor
+                    config={config.navbar}
+                    onChange={(updates) => updateConfig('navbar', updates)}
+                  />
+                </CardContent>
+              )}
             </Card>
 
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Hero Section</CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('hero')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">Hero Section</CardTitle>
+                  {expandedSections.hero ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
               </CardHeader>
-              <CardContent>
-                <HeroEditor
-                  config={config.hero}
-                  onChange={(updates) => updateConfig('hero', updates)}
-                />
-              </CardContent>
+              {expandedSections.hero && (
+                <CardContent>
+                  <HeroEditor
+                    config={config.hero}
+                    onChange={(updates) => updateConfig('hero', updates)}
+                  />
+                </CardContent>
+              )}
             </Card>
 
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Announcement Bar</CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('announcement')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">Announcement Bar</CardTitle>
+                  {expandedSections.announcement ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
               </CardHeader>
-              <CardContent>
-                <AnnouncementEditor
-                  config={config.announcement}
-                  onChange={(updates) => updateConfig('announcement', updates)}
-                />
-              </CardContent>
+              {expandedSections.announcement && (
+                <CardContent>
+                  <AnnouncementEditor
+                    config={config.announcement}
+                    onChange={(updates) => updateConfig('announcement', updates)}
+                  />
+                </CardContent>
+              )}
             </Card>
 
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Scrolling Text</CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('scrollingText')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">Scrolling Text</CardTitle>
+                  {expandedSections.scrollingText ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
               </CardHeader>
-              <CardContent>
-                <ScrollingTextEditor
-                  config={config.scrollingText}
-                  onChange={(updates) => updateConfig('scrollingText', updates)}
-                />
-              </CardContent>
+              {expandedSections.scrollingText && (
+                <CardContent>
+                  <ScrollingTextEditor
+                    config={config.scrollingText}
+                    onChange={(updates) => updateConfig('scrollingText', updates)}
+                  />
+                </CardContent>
+              )}
             </Card>
 
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Cards Section</CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('cards')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">Cards Section</CardTitle>
+                  {expandedSections.cards ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
               </CardHeader>
-              <CardContent>
-                <CardsEditor
-                  config={config.cards}
-                  onChange={(updates) => updateConfig('cards', updates)}
-                />
-              </CardContent>
+              {expandedSections.cards && (
+                <CardContent>
+                  <CardsEditor
+                    config={config.cards}
+                    onChange={(updates) => updateConfig('cards', updates)}
+                  />
+                </CardContent>
+              )}
             </Card>
 
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Text Area</CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('textArea')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">Text Area</CardTitle>
+                  {expandedSections.textArea ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
               </CardHeader>
-              <CardContent>
-                <TextAreaEditor
-                  config={config.textArea}
-                  onChange={(updates) => updateConfig('textArea', updates)}
-                />
-              </CardContent>
+              {expandedSections.textArea && (
+                <CardContent>
+                  <TextAreaEditor
+                    config={config.textArea}
+                    onChange={(updates) => updateConfig('textArea', updates)}
+                  />
+                </CardContent>
+              )}
             </Card>
 
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Footer</CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('footer')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">Footer</CardTitle>
+                  {expandedSections.footer ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
               </CardHeader>
-              <CardContent>
-                <FooterEditor
-                  config={config.footer}
-                  onChange={(updates) => updateConfig('footer', updates)}
-                />
-              </CardContent>
+              {expandedSections.footer && (
+                <CardContent>
+                  <FooterEditor
+                    config={config.footer}
+                    onChange={(updates) => updateConfig('footer', updates)}
+                  />
+                </CardContent>
+              )}
             </Card>
           </div>
         </div>
