@@ -17,6 +17,15 @@ export function WebsitePreview({ config }: WebsitePreviewProps) {
     return { fontFamily: font };
   };
 
+  const getHeroHeight = (height: 'small' | 'medium' | 'large' | 'full') => {
+    switch (height) {
+      case 'small': return '300px';
+      case 'medium': return '500px';
+      case 'large': return '700px';
+      case 'full': return '100vh';
+    }
+  };
+
   return (
     <div className="h-full overflow-y-auto preview-bg">
       <div className="bg-white min-h-full">
@@ -68,11 +77,13 @@ export function WebsitePreview({ config }: WebsitePreviewProps) {
 
         {/* Hero Section */}
         <section 
-          className="py-20 px-6 relative"
+          className="px-6 relative flex items-center"
           style={{
             backgroundImage: config.hero.backgroundImage ? `url(${config.hero.backgroundImage})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundPosition: 'center',
+            height: getHeroHeight(config.hero.height),
+            minHeight: getHeroHeight(config.hero.height)
           }}
         >
           <div className="absolute inset-0 bg-black/40"></div>

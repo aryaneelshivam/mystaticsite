@@ -95,12 +95,16 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
         
         /* Hero Section */
         .hero {
-            padding: 5rem 1.5rem;
+            padding: 1.5rem;
             position: relative;
             background: ${config.hero.backgroundImage ? `url('${config.hero.backgroundImage}')` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
             background-size: cover;
             background-position: center;
             ${getAlignmentClass(config.hero.alignment)};
+            display: flex;
+            align-items: center;
+            height: ${config.hero.height === 'small' ? '300px' : config.hero.height === 'medium' ? '500px' : config.hero.height === 'large' ? '700px' : '100vh'};
+            min-height: ${config.hero.height === 'small' ? '300px' : config.hero.height === 'medium' ? '500px' : config.hero.height === 'large' ? '700px' : '100vh'};
         }
         
         .hero::before {

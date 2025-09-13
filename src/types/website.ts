@@ -15,9 +15,11 @@ export interface NavbarConfig {
 
 export interface HeroConfig {
   backgroundImage: string;
+  backgroundImageFile?: File;
   heading: string;
   alignment: 'left' | 'center' | 'right';
   font: string;
+  height: 'small' | 'medium' | 'large' | 'full';
 }
 
 export interface AnnouncementConfig {

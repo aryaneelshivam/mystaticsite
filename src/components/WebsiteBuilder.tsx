@@ -31,7 +31,8 @@ const defaultConfig: WebsiteConfig = {
     backgroundImage: defaultHeroBg,
     heading: 'Welcome to Your Website',
     alignment: 'center',
-    font: 'Inter'
+    font: 'Inter',
+    height: 'medium'
   },
   announcement: {
     enabled: false,
