@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Copy, Download, Check } from 'lucide-react';
-import { WebsiteConfig } from '@/types/website';
+import { WebsiteConfig, SectionType } from '@/types/website';
 
 interface CodeGeneratorProps {
   config: WebsiteConfig;
@@ -11,6 +11,117 @@ interface CodeGeneratorProps {
 
 export function CodeGenerator({ config }: CodeGeneratorProps) {
   const [copied, setCopied] = useState(false);
+
+  const generateSectionHTML = (sectionType: SectionType) => {
+    const getAlignmentClass = (alignment: 'left' | 'center' | 'right') => {
+      switch (alignment) {
+        case 'left': return 'text-left justify-start';
+        case 'center': return 'text-center justify-center';
+        case 'right': return 'text-right justify-end';
+      }
+    };
+
+    switch (sectionType) {
+      case 'announcement':
+        return config.announcement.enabled ? `<div class="announcement">${config.announcement.text}</div>` : '';
+      
+      case 'navbar':
+        return config.navbar.enabled ? `<nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                ${config.navbar.logo.type === 'text' ? config.navbar.logo.content : `<img src="${config.navbar.logo.content}" alt="Logo" style="height: 2rem;">`}
+            </div>
+            <div class="nav-links">
+                ${config.navbar.links.map(link => `<a href="${link.url}">${link.text}</a>`).join('')}
+            </div>
+        </div>
+    </nav>` : '';
+      
+      case 'hero':
+        return `<section class="hero">
+        <div class="hero-content">
+            <h1>${config.hero.heading}</h1>
+            ${config.hero.subtitle ? `<p class="hero-subtitle">${config.hero.subtitle}</p>` : ''}
+            ${config.hero.ctaButtons && config.hero.ctaButtons.length > 0 ? `
+                <div class="hero-buttons">
+                    ${config.hero.ctaButtons.map(button => `
+                        <a href="${button.url}" class="hero-btn hero-btn-${button.variant}">${button.text}</a>
+                    `).join('')}
+                </div>
+            ` : ''}
+        </div>
+    </section>`;
+      
+      case 'scrollingText':
+        return `<div class="scrolling-text">
+        <div class="scrolling-content">${config.scrollingText.text}</div>
+    </div>`;
+      
+      case 'textArea':
+        return `<section class="text-section">
+        <div class="text-content">
+            ${config.textArea.heading ? `<h2 class="text-section-heading">${config.textArea.heading}</h2>` : ''}
+            <p>${config.textArea.content}</p>
+        </div>
+    </section>`;
+      
+      case 'cards':
+        return `<section class="cards-section">
+        <div class="cards-grid">
+            ${config.cards.cards.map(card => `
+                <div class="card">
+                    ${card.image ? `<img src="${card.image}" alt="${card.title}">` : ''}
+                    <h3>${card.title}</h3>
+                    <p>${card.description}</p>
+                </div>
+            `).join('')}
+        </div>
+    </section>`;
+      
+      case 'footer':
+        return `<footer class="footer">
+        <div class="footer-content">
+            ${config.footer.logo ? `
+                <div class="footer-logo">
+                    ${config.footer.logo.type === 'text' 
+                        ? `<h3>${config.footer.logo.content}</h3>` 
+                        : `<img src="${config.footer.logo.content}" alt="Logo" class="footer-logo-img">`
+                    }
+                </div>
+            ` : ''}
+            
+            <div class="footer-main">
+                <p>${config.footer.text}</p>
+                <div class="footer-links">
+                    ${config.footer.links.map(link => `<a href="${link.url}">${link.text}</a>`).join('')}
+                </div>
+            </div>
+            
+            ${config.footer.socialLinks && config.footer.socialLinks.length > 0 ? `
+                <div class="footer-social">
+                    ${config.footer.socialLinks.map(socialLink => `
+                        <a href="${socialLink.url}" target="_blank" rel="noopener noreferrer" class="social-link" title="${socialLink.platform}">
+                            ${socialLink.platform === 'custom' && socialLink.customIcon 
+                                ? socialLink.customIcon 
+                                : socialLink.platform === 'facebook' ? 'f' 
+                                : socialLink.platform === 'twitter' ? 't'
+                                : socialLink.platform === 'instagram' ? 'i'
+                                : socialLink.platform === 'linkedin' ? 'in'
+                                : socialLink.platform === 'youtube' ? 'yt'
+                                : socialLink.platform === 'github' ? 'gh'
+                                : socialLink.platform
+                            }
+                        </a>
+                    `).join('')}
+                </div>
+            ` : ''}
+        </div>
+    </footer>`;
+      
+      default:
+        return '';
+    }
+  };
 
   const generateHTML = () => {
     const getAlignmentClass = (alignment: 'left' | 'center' | 'right') => {
@@ -86,7 +197,7 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
         
         /* Announcement Bar */
         .announcement {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            background: ${config.announcement.backgroundColor};
             color: white;
             padding: 0.5rem 1rem;
             text-align: center;
@@ -125,12 +236,66 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
             font-weight: 700;
             color: white;
             line-height: 1.2;
+            margin-bottom: 1rem;
             font-family: '${config.hero.font}', sans-serif;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 32rem;
+            font-family: '${config.hero.font}', sans-serif;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .hero-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        
+        .hero-btn-primary {
+            background: white;
+            color: #1f2937;
+        }
+        
+        .hero-btn-primary:hover {
+            background: #f3f4f6;
+        }
+        
+        .hero-btn-secondary {
+            background: #4b5563;
+            color: white;
+        }
+        
+        .hero-btn-secondary:hover {
+            background: #374151;
+        }
+        
+        .hero-btn-outline {
+            border: 2px solid white;
+            color: white;
+            background: transparent;
+        }
+        
+        .hero-btn-outline:hover {
+            background: white;
+            color: #1f2937;
         }
         
         /* Scrolling Text */
         .scrolling-text {
-            background: #111827;
+            background: ${config.scrollingText.backgroundColor};
             color: white;
             padding: 1rem 0;
             overflow: hidden;
@@ -205,6 +370,14 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
             color: #374151;
         }
         
+        .text-section-heading {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
         /* Footer */
         .footer {
             background: #111827;
@@ -215,6 +388,25 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
         .footer-content {
             max-width: 72rem;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            ${config.footer.alignment === 'left' ? 'align-items: flex-start;' : config.footer.alignment === 'right' ? 'align-items: flex-end;' : ''}
+        }
+        
+        .footer-logo h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .footer-logo-img {
+            height: 2rem;
+            width: auto;
+        }
+        
+        .footer-main {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -237,65 +429,44 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
             color: #d1d5db;
         }
         
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            ${config.footer.alignment === 'left' ? 'justify-content: flex-start;' : config.footer.alignment === 'right' ? 'justify-content: flex-end;' : ''}
+        }
+        
+        .social-link {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #374151;
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+        
+        .social-link:hover {
+            background: #4b5563;
+        }
+        
         @media (min-width: 768px) {
-            .footer-content {
+            .footer-main {
                 flex-direction: row;
                 justify-content: space-between;
+                width: 100%;
                 ${config.footer.alignment === 'center' ? 'justify-content: center;' : ''}
             }
         }
     </style>
 </head>
 <body>
-    ${config.announcement.enabled ? `<div class="announcement">${config.announcement.text}</div>` : ''}
-    
-    ${config.navbar.enabled ? `<nav class="navbar">
-        <div class="navbar-content">
-            <div class="logo">
-                ${config.navbar.logo.type === 'text' ? config.navbar.logo.content : `<img src="${config.navbar.logo.content}" alt="Logo" style="height: 2rem;">`}
-            </div>
-            <div class="nav-links">
-                ${config.navbar.links.map(link => `<a href="${link.url}">${link.text}</a>`).join('')}
-            </div>
-        </div>
-    </nav>` : ''}
-    
-    <section class="hero">
-        <div class="hero-content">
-            <h1>${config.hero.heading}</h1>
-        </div>
-    </section>
-    
-    <div class="scrolling-text">
-        <div class="scrolling-content">${config.scrollingText.text}</div>
-    </div>
-    
-    <section class="cards-section">
-        <div class="cards-grid">
-            ${config.cards.cards.map(card => `
-                <div class="card">
-                    ${card.image ? `<img src="${card.image}" alt="${card.title}">` : ''}
-                    <h3>${card.title}</h3>
-                    <p>${card.description}</p>
-                </div>
-            `).join('')}
-        </div>
-    </section>
-    
-    <section class="text-section">
-        <div class="text-content">
-            <p>${config.textArea.content}</p>
-        </div>
-    </section>
-    
-    <footer class="footer">
-        <div class="footer-content">
-            <p>${config.footer.text}</p>
-            <div class="footer-links">
-                ${config.footer.links.map(link => `<a href="${link.url}">${link.text}</a>`).join('')}
-            </div>
-        </div>
-    </footer>
+    ${config.sectionOrder.map(sectionType => generateSectionHTML(sectionType)).join('\n    ')}
 </body>
 </html>`;
   };
