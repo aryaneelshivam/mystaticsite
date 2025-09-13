@@ -108,103 +108,127 @@ export function WebsiteBuilder() {
         </div>
       </div>
 
-      <div className="flex max-w-7xl mx-auto">
+      <div className="w-full">
         {/* Editor Panel */}
-        <div className="w-96 h-screen overflow-y-auto editor-panel border-r">
-          <div className="p-6 space-y-4">
-            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Navigation Bar</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <NavbarEditor
-                  config={config.navbar}
-                  onChange={(updates) => updateConfig('navbar', updates)}
-                />
-              </CardContent>
-            </Card>
+        <div className="w-full h-screen overflow-y-auto editor-panel">
+          <div className="max-w-7xl mx-auto p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Navigation Bar</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <NavbarEditor
+                    config={config.navbar}
+                    onChange={(updates) => updateConfig('navbar', updates)}
+                  />
+                </CardContent>
+              </Card>
 
-            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Hero Section</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <HeroEditor
-                  config={config.hero}
-                  onChange={(updates) => updateConfig('hero', updates)}
-                />
-              </CardContent>
-            </Card>
+              <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Hero Section</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <HeroEditor
+                    config={config.hero}
+                    onChange={(updates) => updateConfig('hero', updates)}
+                  />
+                </CardContent>
+              </Card>
 
-            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Announcement Bar</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <AnnouncementEditor
-                  config={config.announcement}
-                  onChange={(updates) => updateConfig('announcement', updates)}
-                />
-              </CardContent>
-            </Card>
+              <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Announcement Bar</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AnnouncementEditor
+                    config={config.announcement}
+                    onChange={(updates) => updateConfig('announcement', updates)}
+                  />
+                </CardContent>
+              </Card>
 
-            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Scrolling Text</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollingTextEditor
-                  config={config.scrollingText}
-                  onChange={(updates) => updateConfig('scrollingText', updates)}
-                />
-              </CardContent>
-            </Card>
+              <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Scrolling Text</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollingTextEditor
+                    config={config.scrollingText}
+                    onChange={(updates) => updateConfig('scrollingText', updates)}
+                  />
+                </CardContent>
+              </Card>
 
-            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Cards Section</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardsEditor
-                  config={config.cards}
-                  onChange={(updates) => updateConfig('cards', updates)}
-                />
-              </CardContent>
-            </Card>
+              <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Cards Section</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardsEditor
+                    config={config.cards}
+                    onChange={(updates) => updateConfig('cards', updates)}
+                  />
+                </CardContent>
+              </Card>
 
-            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Text Area</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TextAreaEditor
-                  config={config.textArea}
-                  onChange={(updates) => updateConfig('textArea', updates)}
-                />
-              </CardContent>
-            </Card>
+              <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Text Area</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <TextAreaEditor
+                    config={config.textArea}
+                    onChange={(updates) => updateConfig('textArea', updates)}
+                  />
+                </CardContent>
+              </Card>
 
-            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">Footer</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <FooterEditor
-                  config={config.footer}
-                  onChange={(updates) => updateConfig('footer', updates)}
-                />
-              </CardContent>
-            </Card>
+              <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Footer</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <FooterEditor
+                    config={config.footer}
+                    onChange={(updates) => updateConfig('footer', updates)}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Preview/Code Panel */}
+            {activeTab === 'preview' && (
+              <div className="mt-8">
+                <Card className="shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Live Preview</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="h-[600px] overflow-hidden rounded-b-lg">
+                      <WebsitePreview config={config} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeTab === 'code' && (
+              <div className="mt-8">
+                <Card className="shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Generated Code</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="h-[600px] overflow-hidden rounded-b-lg">
+                      <CodeGenerator config={config} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
-        </div>
-
-        {/* Preview/Code Panel */}
-        <div className="flex-1 h-screen overflow-hidden">
-          {activeTab === 'preview' ? (
-            <WebsitePreview config={config} />
-          ) : (
-            <CodeGenerator config={config} />
-          )}
         </div>
       </div>
     </div>
