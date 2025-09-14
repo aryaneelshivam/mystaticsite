@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight, Camera } from 'lucide-react';
 import { Logo } from './Logo';
-import { AuthButton } from './AuthButton';
+// import { AuthButton } from './AuthButton';
 import { WebsiteConfig, SectionType } from '@/types/website';
 import { NavbarEditor } from './editors/NavbarEditor';
 import { HeroEditor } from './editors/HeroEditor';
@@ -281,7 +281,7 @@ export function WebsiteBuilder() {
                   </Button>
                 </>
               )}
-              <AuthButton />
+              {/* <AuthButton /> */}
             </div>
           </div>
         </div>
