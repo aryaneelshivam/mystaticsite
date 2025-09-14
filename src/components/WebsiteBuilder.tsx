@@ -289,7 +289,7 @@ export function WebsiteBuilder() {
 
       <div className="flex w-full">
         {/* Editor Panel */}
-        <div className="w-96 min-h-screen overflow-y-auto editor-panel border-r">
+        <div className="w-96 h-screen overflow-y-auto editor-panel border-r">
           <div className="p-6 space-y-4">
             {/* Section Order Editor */}
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
@@ -524,7 +524,7 @@ export function WebsiteBuilder() {
         </div>
 
         {/* Preview/Code Panel */}
-        <div className="flex-1 min-h-screen">
+        <div className="flex-1 h-screen overflow-y-auto">
           {activeTab === 'preview' ? (
             <WebsitePreview config={config} viewMode={viewMode} />
           ) : (
