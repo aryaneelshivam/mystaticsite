@@ -1,12 +1,17 @@
-import { useUser, useClerk } from "@clerk/clerk-react";
-import { Button } from "@/components/ui/button";
-import { User, LogOut } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { User, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export function AuthButton() {
-  const { isSignedIn, user } = useUser();
-  const { signOut } = useClerk();
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
 
-  if (isSignedIn) {
+  if (loading) {
+    return <div className="w-8 h-8 bg-muted rounded-full animate-pulse" />;
+  }
+
+  if (user) {
     return (
       <div className="flex items-center space-x-3">
         <div className="flex items-center space-x-2">
@@ -14,7 +19,7 @@ export function AuthButton() {
             <User className="w-4 h-4 text-primary-foreground" />
           </div>
           <span className="text-sm font-medium text-foreground">
-            {user?.firstName || user?.emailAddresses[0]?.emailAddress}
+            {user.email}
           </span>
         </div>
         <Button
@@ -31,20 +36,12 @@ export function AuthButton() {
   }
 
   return (
-    <div className="flex items-center space-x-2">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => window.location.href = '/sign-in'}
-      >
-        Sign In
-      </Button>
-      <Button
-        size="sm"
-        onClick={() => window.location.href = '/sign-up'}
-      >
-        Sign Up
-      </Button>
-    </div>
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => navigate('/auth')}
+    >
+      Sign In
+    </Button>
   );
 }
