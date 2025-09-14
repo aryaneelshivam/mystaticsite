@@ -6,6 +6,7 @@ import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, Chevro
 import { Logo } from './Logo';
 import { AuthButton } from './AuthButton';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { WebsiteConfig, SectionType } from '@/types/website';
 import { NavbarEditor } from './editors/NavbarEditor';
 import { HeroEditor } from './editors/HeroEditor';
@@ -108,6 +109,7 @@ const defaultConfig: WebsiteConfig = {
 
 export function WebsiteBuilder() {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [config, setConfig] = useState<WebsiteConfig>(defaultConfig);
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
@@ -218,6 +220,41 @@ export function WebsiteBuilder() {
       }
     }
   };
+
+  // Show mobile-only message on mobile devices
+  if (isMobile) {
+    return (
+      <div className="bg-background min-h-screen flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <Monitor className="w-16 h-16 text-muted-foreground" />
+            </div>
+            <CardTitle className="text-xl">Desktop Required</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              This website builder is designed for desktop and laptop computers only. 
+              Please access this application from a desktop or laptop device for the best experience.
+            </p>
+            <div className="bg-muted rounded-lg p-4">
+              <p className="text-sm font-medium">Recommended devices:</p>
+              <div className="flex items-center justify-center space-x-4 mt-2">
+                <div className="flex items-center space-x-1">
+                  <Monitor className="w-4 h-4" />
+                  <span className="text-sm">Desktop</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Monitor className="w-4 h-4" />
+                  <span className="text-sm">Laptop</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background">
