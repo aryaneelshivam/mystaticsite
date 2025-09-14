@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight, Camera } from 'lucide-react';
+import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight, Camera, Lock } from 'lucide-react';
 import { Logo } from './Logo';
 import { AuthButton } from './AuthButton';
+import { useAuth } from '@/hooks/useAuth';
 import { WebsiteConfig, SectionType } from '@/types/website';
 import { NavbarEditor } from './editors/NavbarEditor';
 import { HeroEditor } from './editors/HeroEditor';
@@ -106,6 +107,7 @@ const defaultConfig: WebsiteConfig = {
 };
 
 export function WebsiteBuilder() {
+  const { user } = useAuth();
   const [config, setConfig] = useState<WebsiteConfig>(defaultConfig);
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
@@ -240,11 +242,21 @@ export function WebsiteBuilder() {
               <Button
                 variant={activeTab === 'code' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setActiveTab('code')}
+                onClick={() => user ? setActiveTab('code') : null}
                 className="transition-smooth"
+                disabled={!user}
               >
-                <Code className="w-4 h-4 mr-2" />
-                Code
+                {user ? (
+                  <>
+                    <Code className="w-4 h-4 mr-2" />
+                    Code
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4 mr-2" />
+                    Code (Login Required)
+                  </>
+                )}
               </Button>
               
               {activeTab === 'preview' && (
@@ -527,8 +539,27 @@ export function WebsiteBuilder() {
         <div className="flex-1 h-screen overflow-y-auto">
           {activeTab === 'preview' ? (
             <WebsitePreview config={config} viewMode={viewMode} />
-          ) : (
+          ) : user ? (
             <CodeGenerator config={config} />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-background">
+              <Card className="w-96">
+                <CardHeader className="text-center">
+                  <div className="flex justify-center mb-4">
+                    <Lock className="w-12 h-12 text-muted-foreground" />
+                  </div>
+                  <CardTitle>Authentication Required</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  <p className="text-muted-foreground">
+                    Please sign in to view and download the generated code for your website.
+                  </p>
+                  <Button onClick={() => setActiveTab('preview')} className="w-full">
+                    Back to Preview
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </div>
       </div>
