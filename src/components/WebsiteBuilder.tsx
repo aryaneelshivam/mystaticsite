@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight } from 'lucide-react';
+import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight, Camera } from 'lucide-react';
+import { Logo } from './Logo';
+import { AuthButton } from './AuthButton';
 import { WebsiteConfig, SectionType } from '@/types/website';
 import { NavbarEditor } from './editors/NavbarEditor';
 import { HeroEditor } from './editors/HeroEditor';
@@ -10,10 +12,12 @@ import { AnnouncementEditor } from './editors/AnnouncementEditor';
 import { ScrollingTextEditor } from './editors/ScrollingTextEditor';
 import { CardsEditor } from './editors/CardsEditor';
 import { TextAreaEditor } from './editors/TextAreaEditor';
+import { CTAEditor } from './editors/CTAEditor';
 import { FooterEditor } from './editors/FooterEditor';
 import { WebsitePreview } from './WebsitePreview';
 import { CodeGenerator } from './CodeGenerator';
 import defaultHeroBg from '@/assets/default-hero-bg.jpg';
+import html2canvas from 'html2canvas';
 
 const defaultConfig: WebsiteConfig = {
   navbar: {
@@ -49,6 +53,7 @@ const defaultConfig: WebsiteConfig = {
     backgroundColor: '#111827'
   },
   cards: {
+    enabled: false,
     cards: [
       { id: '1', title: 'Feature One', description: 'Amazing feature description', image: '' },
       { id: '2', title: 'Feature Two', description: 'Another great feature', image: '' },
@@ -56,8 +61,29 @@ const defaultConfig: WebsiteConfig = {
     ]
   },
   textArea: {
-    heading: 'About Us',
-    content: 'Add your main content here. This is where you can tell your story, describe your services, or share any important information with your visitors.'
+    sections: [
+      {
+        id: '1',
+        heading: 'About Us',
+        content: 'Add your main content here. This is where you can tell your story, describe your services, or share any important information with your visitors.',
+        alignment: 'left',
+        layout: 'text-only'
+      }
+    ]
+  },
+  cta: {
+    heading: 'Ready to Get Started?',
+    subtitle: 'Join thousands of satisfied customers and start building your dream website today.',
+    ctaButtons: [
+      { id: '1', text: 'Start Free Trial', url: '#signup', variant: 'primary' },
+      { id: '2', text: 'Learn More', url: '#learn', variant: 'outline' }
+    ],
+    backgroundColor: '#667eea',
+    textColor: '#ffffff',
+    alignment: 'center',
+    font: 'Inter',
+    buttonAlignment: 'center',
+    layout: 'text-only'
   },
   footer: {
     text: '© 2024 Your Website. All rights reserved.',
@@ -76,7 +102,7 @@ const defaultConfig: WebsiteConfig = {
     ],
     alignment: 'center'
   },
-  sectionOrder: ['announcement', 'navbar', 'hero', 'scrollingText', 'textArea', 'cards', 'footer']
+  sectionOrder: ['announcement', 'navbar', 'hero', 'scrollingText', 'textArea', 'cards', 'cta', 'footer']
 };
 
 export function WebsiteBuilder() {
@@ -90,6 +116,7 @@ export function WebsiteBuilder() {
     scrollingText: false,
     cards: false,
     textArea: false,
+    cta: false,
     footer: false
   });
 
@@ -114,13 +141,14 @@ export function WebsiteBuilder() {
 
   const getSectionTitle = (sectionType: SectionType) => {
     const titles = {
-      announcement: 'Announcement Bar',
-      navbar: 'Navigation Bar',
-      hero: 'Hero Section',
-      scrollingText: 'Scrolling Text',
-      textArea: 'Text Section',
-      cards: 'Cards Section',
-      footer: 'Footer'
+      announcement: '🍞 Announcement Bar',
+      navbar: '🍔 Navigation Bar',
+      hero: '🍕 Hero Section',
+      scrollingText: '🌮 Scrolling Text',
+      textArea: '🍜 Text Section',
+      cards: '🍰 Cards Section',
+      cta: '🍩 Call-to-Action',
+      footer: '🍪 Footer'
     };
     return titles[sectionType];
   };
@@ -132,17 +160,72 @@ export function WebsiteBuilder() {
     }));
   };
 
+  const takeScreenshot = async () => {
+    try {
+      // Find the preview container
+      const previewElement = document.querySelector('.preview-bg');
+      if (!previewElement) {
+        alert('Preview not found. Please make sure you are in preview mode.');
+        return;
+      }
+
+      // Show loading state
+      const button = document.querySelector('[data-screenshot-button]') as HTMLButtonElement;
+      if (button) {
+        button.disabled = true;
+        button.innerHTML = '<Camera className="w-4 h-4 mr-2" /> Taking Screenshot...';
+      }
+
+      // Take screenshot
+      const canvas = await html2canvas(previewElement as HTMLElement, {
+        backgroundColor: '#f3f4f6', // Match the preview background
+        scale: 2, // Higher quality
+        useCORS: true,
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+        width: previewElement.scrollWidth,
+        height: previewElement.scrollHeight,
+      });
+
+      // Create download link
+      const link = document.createElement('a');
+      link.download = `website-preview-${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Reset button
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = '<Camera className="w-4 h-4 mr-2" /> Screenshot';
+      }
+
+    } catch (error) {
+      console.error('Error taking screenshot:', error);
+      alert('Failed to take screenshot. Please try again.');
+      
+      // Reset button
+      const button = document.querySelector('[data-screenshot-button]') as HTMLButtonElement;
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = '<Camera className="w-4 h-4 mr-2" /> Screenshot';
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       {/* Header */}
       <div className="border-b bg-card shadow-md">
         <div className="w-full px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <Palette className="w-4 h-4 text-white" />
-              </div>
-              <h1 className="text-xl font-semibold text-foreground">Website Builder</h1>
+              <Logo size={32} />
+              <h1 className="text-xl font-semibold text-foreground">MyStaticSite</h1>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -185,8 +268,20 @@ export function WebsiteBuilder() {
                       <Smartphone className="w-4 h-4" />
                     </Button>
                   </div>
+                  <Separator orientation="vertical" className="h-6 mx-2" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={takeScreenshot}
+                    className="transition-smooth h-8 px-3"
+                    data-screenshot-button
+                  >
+                    <Camera className="w-4 h-4 mr-2" />
+                    Screenshot
+                  </Button>
                 </>
               )}
+              <AuthButton />
             </div>
           </div>
         </div>
@@ -194,7 +289,7 @@ export function WebsiteBuilder() {
 
       <div className="flex w-full">
         {/* Editor Panel */}
-        <div className="w-96 h-screen overflow-y-auto editor-panel border-r">
+        <div className="w-96 min-h-screen overflow-y-auto editor-panel border-r">
           <div className="p-6 space-y-4">
             {/* Section Order Editor */}
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
@@ -240,7 +335,7 @@ export function WebsiteBuilder() {
                 onClick={() => toggleSection('navbar')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">Navigation Bar</CardTitle>
+                  <CardTitle className="text-sm font-medium">🍔 Navigation Bar</CardTitle>
                   {expandedSections.navbar ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -264,7 +359,7 @@ export function WebsiteBuilder() {
                 onClick={() => toggleSection('hero')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">Hero Section</CardTitle>
+                  <CardTitle className="text-sm font-medium">🍕 Hero Section</CardTitle>
                   {expandedSections.hero ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -288,7 +383,7 @@ export function WebsiteBuilder() {
                 onClick={() => toggleSection('announcement')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">Announcement Bar</CardTitle>
+                  <CardTitle className="text-sm font-medium">🍞 Announcement Bar</CardTitle>
                   {expandedSections.announcement ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -312,7 +407,7 @@ export function WebsiteBuilder() {
                 onClick={() => toggleSection('scrollingText')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">Scrolling Text</CardTitle>
+                  <CardTitle className="text-sm font-medium">🌮 Scrolling Text</CardTitle>
                   {expandedSections.scrollingText ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -336,7 +431,7 @@ export function WebsiteBuilder() {
                 onClick={() => toggleSection('cards')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">Cards Section</CardTitle>
+                  <CardTitle className="text-sm font-medium">🍰 Cards Section</CardTitle>
                   {expandedSections.cards ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -360,7 +455,7 @@ export function WebsiteBuilder() {
                 onClick={() => toggleSection('textArea')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">Text Area</CardTitle>
+                  <CardTitle className="text-sm font-medium">🍜 Text Area</CardTitle>
                   {expandedSections.textArea ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -381,10 +476,34 @@ export function WebsiteBuilder() {
             <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
               <CardHeader 
                 className="cursor-pointer"
+                onClick={() => toggleSection('cta')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">🍩 Call-to-Action</CardTitle>
+                  {expandedSections.cta ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
+              </CardHeader>
+              {expandedSections.cta && (
+                <CardContent>
+                  <CTAEditor
+                    config={config.cta}
+                    onChange={(updates) => updateConfig('cta', updates)}
+                  />
+                </CardContent>
+              )}
+            </Card>
+
+            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+              <CardHeader 
+                className="cursor-pointer"
                 onClick={() => toggleSection('footer')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">Footer</CardTitle>
+                  <CardTitle className="text-sm font-medium">🍪 Footer</CardTitle>
                   {expandedSections.footer ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -405,7 +524,7 @@ export function WebsiteBuilder() {
         </div>
 
         {/* Preview/Code Panel */}
-        <div className="flex-1 h-screen overflow-hidden">
+        <div className="flex-1 min-h-screen">
           {activeTab === 'preview' ? (
             <WebsitePreview config={config} viewMode={viewMode} />
           ) : (

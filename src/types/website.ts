@@ -50,12 +50,36 @@ export interface CardConfig {
 }
 
 export interface CardsConfig {
+  enabled: boolean;
   cards: CardConfig[];
 }
 
-export interface TextAreaConfig {
+export interface TextSection {
+  id: string;
   heading?: string;
   content: string;
+  image?: string;
+  imageFile?: File;
+  alignment: 'left' | 'center' | 'right';
+  layout: 'text-only' | 'image-left' | 'image-right' | 'image-top' | 'image-bottom';
+}
+
+export interface TextAreaConfig {
+  sections: TextSection[];
+}
+
+export interface CTAConfig {
+  heading: string;
+  subtitle?: string;
+  ctaButtons: CTAButton[];
+  backgroundColor: string;
+  textColor: string;
+  alignment: 'left' | 'center' | 'right';
+  font: string;
+  buttonAlignment: 'left' | 'center' | 'right';
+  image?: string;
+  imageFile?: File;
+  layout: 'text-only' | 'image-left' | 'image-right' | 'image-top' | 'image-bottom';
 }
 
 export interface SocialLink {
@@ -80,7 +104,7 @@ export interface FooterConfig {
   alignment: 'left' | 'center' | 'right';
 }
 
-export type SectionType = 'announcement' | 'navbar' | 'hero' | 'scrollingText' | 'textArea' | 'cards' | 'footer';
+export type SectionType = 'announcement' | 'navbar' | 'hero' | 'scrollingText' | 'textArea' | 'cards' | 'cta' | 'footer';
 
 export interface WebsiteConfig {
   navbar: NavbarConfig;
@@ -89,6 +113,7 @@ export interface WebsiteConfig {
   scrollingText: ScrollingTextConfig;
   cards: CardsConfig;
   textArea: TextAreaConfig;
+  cta: CTAConfig;
   footer: FooterConfig;
   sectionOrder: SectionType[];
 }

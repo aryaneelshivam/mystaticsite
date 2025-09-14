@@ -1,8 +1,19 @@
-# Welcome to your Lovable project
+# MyStaticSite 🍕
 
-## Project info
+A beautiful, no-code static website builder that lets you create stunning websites with drag-and-drop simplicity. Generate clean HTML, CSS, and JavaScript code instantly.
 
-**URL**: https://lovable.dev/projects/894184d9-0f82-4b0d-a37b-075e5302944e
+## Features
+
+- 🍔 **Drag & Drop Interface** - Intuitive section-based website building
+- 🍕 **Real-time Preview** - See your changes instantly in desktop and mobile views
+- 🍞 **Multiple Sections** - Announcement bars, navigation, hero sections, text areas, cards, CTAs, and footers
+- 🌮 **Image Support** - Upload images or use random Unsplash images
+- 🍜 **Code Generation** - Export clean, production-ready HTML/CSS/JS
+- 🍰 **Screenshot Feature** - Capture high-quality images of your website
+- 🍩 **Responsive Design** - Mobile-first approach with perfect scaling
+- 🍪 **Modern UI** - Clean, professional interface with black theme
+
+## Quick Start
 
 ## How can I edit this code?
 

@@ -18,10 +18,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 9%;
 
-    /* Primary Brand Colors - Modern Purple/Blue Gradient */
-    --primary: 262 83% 58%;
+    /* Primary Brand Colors - Modern Black Theme */
+    --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 262 83% 48%;
+    --primary-hover: 0 0% 10%;
 
     /* Secondary System */
     --secondary: 240 5% 96%;
@@ -42,21 +42,21 @@
     /* Border & Input System */
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 262 83% 58%;
+    --ring: 0 0% 0%;
 
     /* Design System Extensions */
     --radius: 0.75rem;
     
     /* Gradient System */
-    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(252 56% 57%));
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 20%));
     --gradient-secondary: linear-gradient(135deg, hsl(240 5% 96%), hsl(240 6% 90%));
-    --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(252 56% 57%) 50%, hsl(142 71% 45%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(0 0% 20%) 50%, hsl(0 0% 40%) 100%);
     
     /* Shadow System */
     --shadow-sm: 0 1px 2px 0 hsl(240 10% 9% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(240 10% 9% / 0.1), 0 2px 4px -1px hsl(240 10% 9% / 0.06);
     --shadow-lg: 0 10px 15px -3px hsl(240 10% 9% / 0.1), 0 4px 6px -2px hsl(240 10% 9% / 0.05);
-    --shadow-glow: 0 0 20px hsl(262 83% 58% / 0.3);
+    --shadow-glow: 0 0 20px hsl(0 0% 0% / 0.3);
     
     /* Animation System */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

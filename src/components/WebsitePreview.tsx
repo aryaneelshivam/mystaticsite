@@ -147,25 +147,82 @@ export function WebsitePreview({ config, viewMode }: WebsitePreviewProps) {
         );
 
       case 'textArea':
-        return (
-          <section key="textArea" className="py-16 px-6">
-            <div className="max-w-4xl mx-auto">
-              <div className="prose prose-lg mx-auto">
-                {config.textArea.heading && (
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-                    {config.textArea.heading}
-                  </h2>
-                )}
-                <p className="text-lg leading-relaxed text-gray-700">
-                  {config.textArea.content}
+        const renderTextSection = (section: any) => {
+          const renderTextContent = () => (
+            <div className={`${getAlignmentClass(section.alignment)}`}>
+              {section.heading && (
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                  {section.heading}
+                </h2>
+              )}
+              <div className="prose prose-lg max-w-none">
+                <p className="text-lg leading-relaxed text-gray-700 whitespace-pre-wrap">
+                  {section.content}
                 </p>
               </div>
+            </div>
+          );
+
+          const renderTextImage = () => (
+            section.image && (
+              <div className="flex-shrink-0">
+                <img 
+                  src={section.image} 
+                  alt={section.heading || 'Text section'} 
+                  className="w-full h-auto rounded-lg shadow-md"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            )
+          );
+
+          return (
+            <div key={section.id} className="mb-12 last:mb-0">
+              {section.layout === 'text-only' && renderTextContent()}
+              
+              {section.layout === 'image-left' && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  {renderTextImage()}
+                  <div>{renderTextContent()}</div>
+                </div>
+              )}
+              
+              {section.layout === 'image-right' && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  <div>{renderTextContent()}</div>
+                  {renderTextImage()}
+                </div>
+              )}
+              
+              {section.layout === 'image-top' && (
+                <div className="space-y-6">
+                  {renderTextImage()}
+                  {renderTextContent()}
+                </div>
+              )}
+              
+              {section.layout === 'image-bottom' && (
+                <div className="space-y-6">
+                  {renderTextContent()}
+                  {renderTextImage()}
+                </div>
+              )}
+            </div>
+          );
+        };
+
+        return (
+          <section key="textArea" className="py-16 px-6">
+            <div className="max-w-6xl mx-auto">
+              {config.textArea.sections.map(section => renderTextSection(section))}
             </div>
           </section>
         );
 
       case 'cards':
-        return (
+        return config.cards.enabled ? (
           <section key="cards" className="py-16 px-6 bg-gray-50">
             <div className="max-w-6xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -188,6 +245,114 @@ export function WebsitePreview({ config, viewMode }: WebsitePreviewProps) {
                   </div>
                 ))}
               </div>
+            </div>
+          </section>
+        ) : null;
+
+      case 'cta':
+        const getButtonAlignmentClass = (alignment: 'left' | 'center' | 'right') => {
+          switch (alignment) {
+            case 'left': return 'justify-start';
+            case 'center': return 'justify-center';
+            case 'right': return 'justify-end';
+          }
+        };
+
+        const renderCTAContent = () => (
+          <div className={`${getAlignmentClass(config.cta.alignment)}`}>
+            <h2 
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={getFontFamily(config.cta.font)}
+            >
+              {config.cta.heading}
+            </h2>
+            
+            {config.cta.subtitle && (
+              <p 
+                className="text-lg md:text-xl mb-8 max-w-2xl mx-auto"
+                style={getFontFamily(config.cta.font)}
+              >
+                {config.cta.subtitle}
+              </p>
+            )}
+            
+            {config.cta.ctaButtons && config.cta.ctaButtons.length > 0 && (
+              <div className={`flex flex-wrap gap-4 ${getButtonAlignmentClass(config.cta.buttonAlignment)}`}>
+                {config.cta.ctaButtons.map((button) => (
+                  <a
+                    key={button.id}
+                    href={button.url}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                      button.variant === 'primary' 
+                        ? 'bg-white text-gray-900 hover:bg-gray-100' 
+                        : button.variant === 'secondary'
+                        ? 'bg-gray-600 text-white hover:bg-gray-700'
+                        : 'border-2 border-white text-white hover:bg-white hover:text-gray-900'
+                    }`}
+                    style={getFontFamily(config.cta.font)}
+                  >
+                    {button.text}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+
+        const renderCTAImage = () => (
+          config.cta.image && (
+            <div className="flex-shrink-0">
+              <img 
+                src={config.cta.image} 
+                alt="CTA" 
+                className="w-full h-auto rounded-lg shadow-lg"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+          )
+        );
+
+        return (
+          <section 
+            key="cta" 
+            className="py-16 px-6"
+            style={{ 
+              backgroundColor: config.cta.backgroundColor,
+              color: config.cta.textColor 
+            }}
+          >
+            <div className="max-w-6xl mx-auto">
+              {config.cta.layout === 'text-only' && renderCTAContent()}
+              
+              {config.cta.layout === 'image-left' && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  {renderCTAImage()}
+                  <div>{renderCTAContent()}</div>
+                </div>
+              )}
+              
+              {config.cta.layout === 'image-right' && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  <div>{renderCTAContent()}</div>
+                  {renderCTAImage()}
+                </div>
+              )}
+              
+              {config.cta.layout === 'image-top' && (
+                <div className="space-y-8">
+                  {renderCTAImage()}
+                  {renderCTAContent()}
+                </div>
+              )}
+              
+              {config.cta.layout === 'image-bottom' && (
+                <div className="space-y-8">
+                  {renderCTAContent()}
+                  {renderCTAImage()}
+                </div>
+              )}
             </div>
           </section>
         );
@@ -267,18 +432,33 @@ export function WebsitePreview({ config, viewMode }: WebsitePreviewProps) {
   };
 
   return (
-    <div className="h-full overflow-y-auto preview-bg">
-      <div className={`bg-white min-h-full transition-all duration-300 ${
-        viewMode === 'mobile' 
-          ? 'max-w-sm mx-auto shadow-2xl border border-gray-200 rounded-lg overflow-hidden' 
-          : 'w-full'
-      }`}>
-        {viewMode === 'mobile' && (
-          <div className="bg-gray-800 h-6 flex items-center justify-center">
-            <div className="w-16 h-1 bg-gray-600 rounded-full"></div>
+    <div className="min-h-full overflow-y-auto preview-bg bg-gray-100 p-4">
+      <div className="flex justify-center items-start min-h-full">
+        <div className={`bg-white transition-all duration-300 shadow-lg border border-gray-200 ${
+          viewMode === 'mobile' 
+            ? 'w-80 max-w-sm rounded-2xl overflow-hidden' 
+            : 'w-full max-w-6xl rounded-lg overflow-hidden'
+        }`}>
+          {/* Device Frame Header */}
+          {viewMode === 'mobile' ? (
+            <div className="bg-gray-800 h-8 flex items-center justify-center">
+              <div className="w-20 h-1 bg-gray-600 rounded-full"></div>
+            </div>
+          ) : (
+            <div className="bg-gray-50 h-6 flex items-center justify-center border-b border-gray-200">
+              <div className="flex space-x-2">
+                <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+              </div>
+            </div>
+          )}
+          
+          {/* Website Content */}
+          <div className="min-h-full">
+            {config.sectionOrder.map((sectionType) => renderSection(sectionType))}
           </div>
-        )}
-        {config.sectionOrder.map((sectionType) => renderSection(sectionType))}
+        </div>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
         return config.navbar.enabled ? `<nav class="navbar">
         <div class="navbar-content">
             <div class="logo">
-                ${config.navbar.logo.type === 'text' ? config.navbar.logo.content : `<img src="${config.navbar.logo.content}" alt="Logo" style="height: 2rem;">`}
+                ${config.navbar.logo.type === 'text' ? config.navbar.logo.content : `<img src="" alt="Your logo here" style="height: 2rem;">`}
             </div>
             <div class="nav-links">
                 ${config.navbar.links.map(link => `<a href="${link.url}">${link.text}</a>`).join('')}
@@ -60,21 +60,117 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
       case 'textArea':
         return `<section class="text-section">
         <div class="text-content">
-            ${config.textArea.heading ? `<h2 class="text-section-heading">${config.textArea.heading}</h2>` : ''}
-            <p>${config.textArea.content}</p>
+            ${config.textArea.sections.map(section => `
+                <div class="text-section-item">
+                    ${section.heading ? `<h2 class="text-section-heading">${section.heading}</h2>` : ''}
+                    <p>${section.content}</p>
+                    ${section.layout !== 'text-only' ? `
+                        <div class="text-section-image">
+                            <img src="" alt="Your image here" style="width: 100%; height: auto; border-radius: 8px;">
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('')}
         </div>
     </section>`;
       
       case 'cards':
-        return `<section class="cards-section">
+        return config.cards.enabled ? `<section class="cards-section">
         <div class="cards-grid">
             ${config.cards.cards.map(card => `
                 <div class="card">
-                    ${card.image ? `<img src="${card.image}" alt="${card.title}">` : ''}
+                    <img src="" alt="Your image here" style="width: 100%; height: 12rem; object-fit: cover; border-radius: 0.5rem; margin-bottom: 1rem;">
                     <h3>${card.title}</h3>
                     <p>${card.description}</p>
                 </div>
             `).join('')}
+        </div>
+    </section>` : '';
+      
+      case 'cta':
+        return `<section class="cta-section" style="background-color: ${config.cta.backgroundColor}; color: ${config.cta.textColor}; padding: 4rem 1.5rem;">
+        <div class="cta-content" style="max-width: 64rem; margin: 0 auto;">
+            ${config.cta.layout === 'text-only' ? `
+                <div class="cta-text" style="text-align: ${config.cta.alignment};">
+                    <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">${config.cta.heading}</h2>
+                    ${config.cta.subtitle ? `<p style="font-size: 1.25rem; margin-bottom: 2rem;">${config.cta.subtitle}</p>` : ''}
+                    <div class="cta-buttons" style="display: flex; gap: 1rem; justify-content: ${config.cta.buttonAlignment === 'left' ? 'flex-start' : config.cta.buttonAlignment === 'right' ? 'flex-end' : 'center'};">
+                        ${config.cta.ctaButtons.map(button => `
+                            <a href="${button.url}" class="cta-btn cta-btn-${button.variant}" style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 500; display: inline-block;">
+                                ${button.text}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : config.cta.layout === 'image-left' ? `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+                    <div class="cta-image">
+                        <img src="" alt="Your image here" style="width: 100%; height: auto; border-radius: 8px;">
+                    </div>
+                    <div class="cta-text" style="text-align: ${config.cta.alignment};">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">${config.cta.heading}</h2>
+                        ${config.cta.subtitle ? `<p style="font-size: 1.25rem; margin-bottom: 2rem;">${config.cta.subtitle}</p>` : ''}
+                        <div class="cta-buttons" style="display: flex; gap: 1rem; justify-content: ${config.cta.buttonAlignment === 'left' ? 'flex-start' : config.cta.buttonAlignment === 'right' ? 'flex-end' : 'center'};">
+                            ${config.cta.ctaButtons.map(button => `
+                                <a href="${button.url}" class="cta-btn cta-btn-${button.variant}" style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 500; display: inline-block;">
+                                    ${button.text}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            ` : config.cta.layout === 'image-right' ? `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+                    <div class="cta-text" style="text-align: ${config.cta.alignment};">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">${config.cta.heading}</h2>
+                        ${config.cta.subtitle ? `<p style="font-size: 1.25rem; margin-bottom: 2rem;">${config.cta.subtitle}</p>` : ''}
+                        <div class="cta-buttons" style="display: flex; gap: 1rem; justify-content: ${config.cta.buttonAlignment === 'left' ? 'flex-start' : config.cta.buttonAlignment === 'right' ? 'flex-end' : 'center'};">
+                            ${config.cta.ctaButtons.map(button => `
+                                <a href="${button.url}" class="cta-btn cta-btn-${button.variant}" style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 500; display: inline-block;">
+                                    ${button.text}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="cta-image">
+                        <img src="" alt="Your image here" style="width: 100%; height: auto; border-radius: 8px;">
+                    </div>
+                </div>
+            ` : config.cta.layout === 'image-top' ? `
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div class="cta-image">
+                        <img src="" alt="Your image here" style="width: 100%; height: auto; border-radius: 8px;">
+                    </div>
+                    <div class="cta-text" style="text-align: ${config.cta.alignment};">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">${config.cta.heading}</h2>
+                        ${config.cta.subtitle ? `<p style="font-size: 1.25rem; margin-bottom: 2rem;">${config.cta.subtitle}</p>` : ''}
+                        <div class="cta-buttons" style="display: flex; gap: 1rem; justify-content: ${config.cta.buttonAlignment === 'left' ? 'flex-start' : config.cta.buttonAlignment === 'right' ? 'flex-end' : 'center'};">
+                            ${config.cta.ctaButtons.map(button => `
+                                <a href="${button.url}" class="cta-btn cta-btn-${button.variant}" style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 500; display: inline-block;">
+                                    ${button.text}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            ` : config.cta.layout === 'image-bottom' ? `
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div class="cta-text" style="text-align: ${config.cta.alignment};">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">${config.cta.heading}</h2>
+                        ${config.cta.subtitle ? `<p style="font-size: 1.25rem; margin-bottom: 2rem;">${config.cta.subtitle}</p>` : ''}
+                        <div class="cta-buttons" style="display: flex; gap: 1rem; justify-content: ${config.cta.buttonAlignment === 'left' ? 'flex-start' : config.cta.buttonAlignment === 'right' ? 'flex-end' : 'center'};">
+                            ${config.cta.ctaButtons.map(button => `
+                                <a href="${button.url}" class="cta-btn cta-btn-${button.variant}" style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 500; display: inline-block;">
+                                    ${button.text}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="cta-image">
+                        <img src="" alt="Your image here" style="width: 100%; height: auto; border-radius: 8px;">
+                    </div>
+                </div>
+            ` : ''}
         </div>
     </section>`;
       
@@ -85,7 +181,7 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
                 <div class="footer-logo">
                     ${config.footer.logo.type === 'text' 
                         ? `<h3>${config.footer.logo.content}</h3>` 
-                        : `<img src="${config.footer.logo.content}" alt="Logo" class="footer-logo-img">`
+                        : `<img src="" alt="Your logo here" class="footer-logo-img">`
                     }
                 </div>
             ` : ''}
@@ -208,7 +304,8 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
         .hero {
             padding: 1.5rem;
             position: relative;
-            background: ${config.hero.backgroundImage ? `url('${config.hero.backgroundImage}')` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+            /* Replace the gradient below with your own background image: background: url('your-image-url.jpg'); */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             background-size: cover;
             background-position: center;
             ${getAlignmentClass(config.hero.alignment)};
@@ -453,6 +550,36 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
         
         .social-link:hover {
             background: #4b5563;
+        }
+        
+        /* CTA Section Styles */
+        .cta-btn-primary {
+            background: white;
+            color: #1f2937;
+        }
+        
+        .cta-btn-primary:hover {
+            background: #f3f4f6;
+        }
+        
+        .cta-btn-secondary {
+            background: #4b5563;
+            color: white;
+        }
+        
+        .cta-btn-secondary:hover {
+            background: #374151;
+        }
+        
+        .cta-btn-outline {
+            border: 2px solid white;
+            color: white;
+            background: transparent;
+        }
+        
+        .cta-btn-outline:hover {
+            background: white;
+            color: #1f2937;
         }
         
         @media (min-width: 768px) {

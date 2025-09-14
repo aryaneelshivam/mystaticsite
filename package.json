@@ -1,7 +1,16 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "mystaticsite",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Build beautiful static websites with drag-and-drop simplicity. No-code website builder with instant HTML, CSS, and JavaScript generation.",
+  "keywords": [
+    "static website builder",
+    "no-code",
+    "HTML generator",
+    "website creator",
+    "static site generator"
+  ],
+  "author": "MyStaticSite Team",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +20,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.47.0",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
@@ -45,6 +55,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
+    "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
