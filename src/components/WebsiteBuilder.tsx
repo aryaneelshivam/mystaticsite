@@ -6,8 +6,10 @@ import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, Chevro
 import { Logo } from './Logo';
 import { AuthButton } from './AuthButton';
 import { useAuth } from '@/hooks/useAuth';
+import { usePayment } from '@/hooks/usePayment';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { WebsiteConfig, SectionType } from '@/types/website';
+import { Paywall } from './Paywall';
 import { NavbarEditor } from './editors/NavbarEditor';
 import { HeroEditor } from './editors/HeroEditor';
 import { AnnouncementEditor } from './editors/AnnouncementEditor';
@@ -109,6 +111,7 @@ const defaultConfig: WebsiteConfig = {
 
 export function WebsiteBuilder() {
   const { user } = useAuth();
+  const { hasPaid, isLoading: paymentLoading } = usePayment();
   const isMobile = useIsMobile();
   const [config, setConfig] = useState<WebsiteConfig>(defaultConfig);
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
@@ -279,11 +282,22 @@ export function WebsiteBuilder() {
               <Button
                 variant={activeTab === 'code' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => user ? setActiveTab('code') : null}
+                onClick={() => {
+                  if (user && hasPaid) {
+                    setActiveTab('code');
+                  } else if (user && !hasPaid) {
+                    setActiveTab('code'); // Show paywall
+                  }
+                }}
                 className="transition-smooth"
                 disabled={!user}
               >
-                {user ? (
+                {!user ? (
+                  <>
+                    <Lock className="w-4 h-4 mr-2" />
+                    Code (Login Required)
+                  </>
+                ) : hasPaid ? (
                   <>
                     <Code className="w-4 h-4 mr-2" />
                     Code
@@ -291,7 +305,7 @@ export function WebsiteBuilder() {
                 ) : (
                   <>
                     <Lock className="w-4 h-4 mr-2" />
-                    Code (Login Required)
+                    Code (Payment Required)
                   </>
                 )}
               </Button>
@@ -576,9 +590,7 @@ export function WebsiteBuilder() {
         <div className="flex-1 h-screen overflow-y-auto">
           {activeTab === 'preview' ? (
             <WebsitePreview config={config} viewMode={viewMode} />
-          ) : user ? (
-            <CodeGenerator config={config} />
-          ) : (
+          ) : !user ? (
             <div className="flex items-center justify-center h-full bg-background">
               <Card className="w-96">
                 <CardHeader className="text-center">
@@ -597,6 +609,10 @@ export function WebsiteBuilder() {
                 </CardContent>
               </Card>
             </div>
+          ) : user && !hasPaid ? (
+            <Paywall />
+          ) : (
+            <CodeGenerator config={config} />
           )}
         </div>
       </div>
