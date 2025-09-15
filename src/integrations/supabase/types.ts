@@ -16,38 +16,39 @@ export type Database = {
     Tables: {
       payments: {
         Row: {
-          id: string
-          user_id: string
-          razorpay_payment_id: string | null
-          razorpay_order_id: string | null
           amount: number
-          currency: string
-          status: 'pending' | 'completed' | 'failed' | 'cancelled'
           created_at: string
+          currency: string
+          id: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          status: string
           updated_at: string
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          razorpay_payment_id?: string | null
-          razorpay_order_id?: string | null
-          amount: number
-          currency?: string
-          status?: 'pending' | 'completed' | 'failed' | 'cancelled'
+          amount?: number
           created_at?: string
+          currency?: string
+          id?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
           updated_at?: string
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          razorpay_payment_id?: string | null
-          razorpay_order_id?: string | null
           amount?: number
-          currency?: string
-          status?: 'pending' | 'completed' | 'failed' | 'cancelled'
           created_at?: string
+          currency?: string
+          id?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
           updated_at?: string
+          user_id?: string
         }
+        Relationships: []
       }
     }
     Views: {
