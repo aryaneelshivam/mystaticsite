@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Copy, Download, Check } from 'lucide-react';
+import { Copy, Download, Check, Lightbulb } from 'lucide-react';
 import { WebsiteConfig, SectionType } from '@/types/website';
 
 interface CodeGeneratorProps {
@@ -232,8 +232,31 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated Website</title>
+    <meta name="viewport" content="${config.seo?.viewport || 'width=device-width, initial-scale=1.0'}">
+    <title>${config.seo?.title || 'Generated Website'}</title>
+    ${config.seo?.description ? `<meta name="description" content="${config.seo.description}">` : ''}
+    ${config.seo?.keywords ? `<meta name="keywords" content="${config.seo.keywords}">` : ''}
+    ${config.seo?.author ? `<meta name="author" content="${config.seo.author}">` : ''}
+    ${config.seo?.robots ? `<meta name="robots" content="${config.seo.robots}">` : ''}
+    ${config.seo?.themeColor ? `<meta name="theme-color" content="${config.seo.themeColor}">` : ''}
+    ${config.seo?.canonicalUrl ? `<link rel="canonical" href="${config.seo.canonicalUrl}">` : ''}
+    ${config.seo?.favicon ? `<link rel="icon" href="${config.seo.favicon}">` : ''}
+    
+    <!-- Open Graph / Facebook -->
+    ${config.seo?.ogTitle ? `<meta property="og:type" content="website">` : ''}
+    ${config.seo?.ogTitle ? `<meta property="og:title" content="${config.seo.ogTitle}">` : ''}
+    ${config.seo?.ogDescription ? `<meta property="og:description" content="${config.seo.ogDescription}">` : ''}
+    ${config.seo?.ogImage ? `<meta property="og:image" content="${config.seo.ogImage}">` : ''}
+    ${config.seo?.ogUrl ? `<meta property="og:url" content="${config.seo.ogUrl}">` : ''}
+    
+    <!-- Twitter -->
+    ${config.seo?.twitterCard ? `<meta name="twitter:card" content="${config.seo.twitterCard}">` : ''}
+    ${config.seo?.twitterSite ? `<meta name="twitter:site" content="${config.seo.twitterSite}">` : ''}
+    ${config.seo?.twitterCreator ? `<meta name="twitter:creator" content="${config.seo.twitterCreator}">` : ''}
+    ${config.seo?.ogTitle ? `<meta name="twitter:title" content="${config.seo.ogTitle}">` : ''}
+    ${config.seo?.ogDescription ? `<meta name="twitter:description" content="${config.seo.ogDescription}">` : ''}
+    ${config.seo?.ogImage ? `<meta name="twitter:image" content="${config.seo.ogImage}">` : ''}
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -650,6 +673,27 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
           </div>
         </CardHeader>
         <CardContent className="h-full pb-6">
+          {/* Image Notice */}
+          <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                  <span className="text-lg">💡</span>
+                </div>
+              </div>
+              <div className="flex-1">
+                <h4 className="text-sm font-semibold text-amber-800 mb-1">
+                  Important: Image Links
+                </h4>
+                <p className="text-sm text-amber-700">
+                  In the generated code, all images are replaced with empty containers. After copying the code, 
+                  you'll need to manually replace the empty <code className="bg-amber-100 px-1 rounded">src=""</code> attributes 
+                  with your actual image URLs.
+                </p>
+              </div>
+            </div>
+          </div>
+          
           <Textarea
             value={generateHTML()}
             readOnly

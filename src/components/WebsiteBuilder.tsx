@@ -2,14 +2,13 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight, Camera, Lock } from 'lucide-react';
+import { Code, Eye, Palette, Download, GripVertical, Monitor, Smartphone, ChevronDown, ChevronRight, Camera, Lock, Flame } from 'lucide-react';
 import { Logo } from './Logo';
 import { AuthButton } from './AuthButton';
 import { useAuth } from '@/hooks/useAuth';
-import { usePayment } from '@/hooks/usePayment';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { WebsiteConfig, SectionType } from '@/types/website';
-import { Paywall } from './Paywall';
+import { SEOPopup } from './SEOPopup';
 import { NavbarEditor } from './editors/NavbarEditor';
 import { HeroEditor } from './editors/HeroEditor';
 import { AnnouncementEditor } from './editors/AnnouncementEditor';
@@ -111,7 +110,6 @@ const defaultConfig: WebsiteConfig = {
 
 export function WebsiteBuilder() {
   const { user } = useAuth();
-  const { hasPaid, isLoading: paymentLoading } = usePayment();
   const isMobile = useIsMobile();
   const [config, setConfig] = useState<WebsiteConfig>(defaultConfig);
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
@@ -126,6 +124,7 @@ export function WebsiteBuilder() {
     cta: false,
     footer: false
   });
+  const [showSEOPopup, setShowSEOPopup] = useState(false);
 
   const updateConfig = (section: keyof WebsiteConfig, updates: any) => {
     setConfig(prev => ({
@@ -180,7 +179,7 @@ export function WebsiteBuilder() {
       const button = document.querySelector('[data-screenshot-button]') as HTMLButtonElement;
       if (button) {
         button.disabled = true;
-        button.innerHTML = '<Camera className="w-4 h-4 mr-2" /> Taking Screenshot...';
+        button.innerHTML = '<div class="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>';
       }
 
       // Take screenshot
@@ -208,7 +207,7 @@ export function WebsiteBuilder() {
       // Reset button
       if (button) {
         button.disabled = false;
-        button.innerHTML = '<Camera className="w-4 h-4 mr-2" /> Screenshot';
+        button.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>';
       }
 
     } catch (error) {
@@ -219,7 +218,7 @@ export function WebsiteBuilder() {
       const button = document.querySelector('[data-screenshot-button]') as HTMLButtonElement;
       if (button) {
         button.disabled = false;
-        button.innerHTML = '<Camera className="w-4 h-4 mr-2" /> Screenshot';
+        button.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>';
       }
     }
   };
@@ -282,22 +281,11 @@ export function WebsiteBuilder() {
               <Button
                 variant={activeTab === 'code' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => {
-                  if (user && hasPaid) {
-                    setActiveTab('code');
-                  } else if (user && !hasPaid) {
-                    setActiveTab('code'); // Show paywall
-                  }
-                }}
+                onClick={() => user ? setActiveTab('code') : null}
                 className="transition-smooth"
                 disabled={!user}
               >
-                {!user ? (
-                  <>
-                    <Lock className="w-4 h-4 mr-2" />
-                    Code (Login Required)
-                  </>
-                ) : hasPaid ? (
+                {user ? (
                   <>
                     <Code className="w-4 h-4 mr-2" />
                     Code
@@ -305,7 +293,7 @@ export function WebsiteBuilder() {
                 ) : (
                   <>
                     <Lock className="w-4 h-4 mr-2" />
-                    Code (Payment Required)
+                    Code (Login Required)
                   </>
                 )}
               </Button>
@@ -339,8 +327,17 @@ export function WebsiteBuilder() {
                     className="transition-smooth h-8 px-3"
                     data-screenshot-button
                   >
-                    <Camera className="w-4 h-4 mr-2" />
-                    Screenshot
+                    <Camera className="w-4 h-4" />
+                  </Button>
+                  <Separator orientation="vertical" className="h-6 mx-2" />
+                  <Button
+                    variant={(config as any).seo?.enabled ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setShowSEOPopup(true)}
+                    className="transition-smooth h-8 px-3"
+                    title="SEO & Metadata"
+                  >
+                    <span className="text-sm">🔥</span>
                   </Button>
                 </>
               )}
@@ -590,7 +587,9 @@ export function WebsiteBuilder() {
         <div className="flex-1 h-screen overflow-y-auto">
           {activeTab === 'preview' ? (
             <WebsitePreview config={config} viewMode={viewMode} />
-          ) : !user ? (
+          ) : user ? (
+            <CodeGenerator config={config} />
+          ) : (
             <div className="flex items-center justify-center h-full bg-background">
               <Card className="w-96">
                 <CardHeader className="text-center">
@@ -609,13 +608,25 @@ export function WebsiteBuilder() {
                 </CardContent>
               </Card>
             </div>
-          ) : user && !hasPaid ? (
-            <Paywall />
-          ) : (
-            <CodeGenerator config={config} />
           )}
         </div>
       </div>
+
+      {/* SEO Popup */}
+      <SEOPopup
+        isOpen={showSEOPopup}
+        onClose={() => setShowSEOPopup(false)}
+        onSave={(seoData) => {
+          setConfig(prev => ({
+            ...prev,
+            seo: {
+              enabled: true,
+              ...seoData
+            }
+          }));
+        }}
+        initialData={(config as any).seo}
+      />
     </div>
   );
 }

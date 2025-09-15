@@ -104,6 +104,26 @@ export interface FooterConfig {
   alignment: 'left' | 'center' | 'right';
 }
 
+export interface SEOConfig {
+  enabled: boolean;
+  title: string;
+  description: string;
+  keywords: string;
+  author: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: string;
+  ogUrl: string;
+  twitterCard: string;
+  twitterSite: string;
+  twitterCreator: string;
+  canonicalUrl: string;
+  robots: string;
+  viewport: string;
+  themeColor: string;
+  favicon: string;
+}
+
 export type SectionType = 'announcement' | 'navbar' | 'hero' | 'scrollingText' | 'textArea' | 'cards' | 'cta' | 'footer';
 
 export interface WebsiteConfig {
@@ -116,4 +136,5 @@ export interface WebsiteConfig {
   cta: CTAConfig;
   footer: FooterConfig;
   sectionOrder: SectionType[];
+  seo?: SEOConfig;
 }
