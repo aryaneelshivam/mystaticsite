@@ -14,8 +14,19 @@ serve(async (req) => {
   }
 
   try {
-    const body = await req.text()
+    // Check if this is a webhook request (has Razorpay signature)
     const signature = req.headers.get('x-razorpay-signature')
+    if (!signature) {
+      return new Response(
+        JSON.stringify({ error: 'Missing Razorpay signature' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    const body = await req.text()
     const webhookSecret = Deno.env.get('RAZORPAY_WEBHOOK_SECRET')
     
     console.log('Webhook received:', {
