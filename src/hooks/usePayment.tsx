@@ -30,21 +30,16 @@ export const usePayment = () => {
       setPaymentStatus(prev => ({ ...prev, loading: true, error: null }));
 
       // Check if user has any completed payment in the last 24 hours
-      const { data: payments, error } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'completed')
-        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (error) {
-        throw error;
+      const response = await fetch(`http://localhost:3001/api/payment/user/${user.id}/active`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to check payment status');
       }
 
+      const data = await response.json();
+      
       setPaymentStatus({
-        hasActivePayment: payments && payments.length > 0,
+        hasActivePayment: data.hasActivePayment,
         loading: false,
         error: null
       });
@@ -64,15 +59,15 @@ export const usePayment = () => {
     }
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const response = await fetch('/api/functions/v1/create-razorpay-order', {
+      const response = await fetch('http://localhost:3001/api/payment/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`,
         },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ 
+          amount,
+          userId: user.id 
+        }),
       });
 
       if (!response.ok) {
