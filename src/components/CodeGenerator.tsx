@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Copy, Download, Check, Lightbulb } from 'lucide-react';
+import { Copy, Download, Check, Lightbulb, CreditCard, Lock } from 'lucide-react';
 import { WebsiteConfig, SectionType } from '@/types/website';
+import { usePayment } from '@/hooks/usePayment';
+import { PaymentModal } from './PaymentModal';
 
 interface CodeGeneratorProps {
   config: WebsiteConfig;
@@ -11,6 +13,8 @@ interface CodeGeneratorProps {
 
 export function CodeGenerator({ config }: CodeGeneratorProps) {
   const [copied, setCopied] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const { hasActivePayment, loading: paymentLoading } = usePayment();
 
   const generateSectionHTML = (sectionType: SectionType) => {
     const getAlignmentClass = (alignment: 'left' | 'center' | 'right') => {
@@ -640,6 +644,62 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  // Show payment required screen if user hasn't paid
+  if (paymentLoading) {
+    return (
+      <div className="h-full p-6 bg-gray-50 flex items-center justify-center">
+        <Card className="w-96">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Checking payment status...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!hasActivePayment) {
+    return (
+      <div className="h-full p-6 bg-gray-50 flex items-center justify-center">
+        <Card className="w-96">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <Lock className="w-12 h-12 text-muted-foreground" />
+            </div>
+            <CardTitle>Payment Required</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              Access to code generation requires a one-time payment of ₹99 for 24-hour access.
+            </p>
+            <Button 
+              onClick={() => setShowPaymentModal(true)} 
+              className="w-full"
+              size="lg"
+            >
+              <CreditCard className="w-4 h-4 mr-2" />
+              Pay ₹99 to Access Code
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              Secure payment powered by Razorpay
+            </p>
+          </CardContent>
+        </Card>
+        
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          onPaymentSuccess={() => {
+            // Payment success will be handled by the payment hook
+            setShowPaymentModal(false);
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="h-full p-6 bg-gray-50">
