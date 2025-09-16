@@ -1,4 +1,5 @@
 import { WebsiteConfig, SectionType } from '@/types/website';
+import { Stats } from './Stats';
 
 interface WebsitePreviewProps {
   config: WebsiteConfig;
@@ -248,6 +249,9 @@ export function WebsitePreview({ config, viewMode }: WebsitePreviewProps) {
             </div>
           </section>
         ) : null;
+
+      case 'stats':
+        return <Stats key="stats" config={config} />;
 
       case 'cta':
         const getButtonAlignmentClass = (alignment: 'left' | 'center' | 'right') => {

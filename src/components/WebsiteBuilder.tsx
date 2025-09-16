@@ -15,6 +15,7 @@ import { AnnouncementEditor } from './editors/AnnouncementEditor';
 import { ScrollingTextEditor } from './editors/ScrollingTextEditor';
 import { CardsEditor } from './editors/CardsEditor';
 import { TextAreaEditor } from './editors/TextAreaEditor';
+import { StatsEditor } from './editors/StatsEditor';
 import { CTAEditor } from './editors/CTAEditor';
 import { FooterEditor } from './editors/FooterEditor';
 import { WebsitePreview } from './WebsitePreview';
@@ -74,6 +75,39 @@ const defaultConfig: WebsiteConfig = {
       }
     ]
   },
+  stats: {
+    enabled: false,
+    items: [
+      {
+        number: '1000',
+        suffix: '+',
+        label: 'Happy Customers',
+        description: 'Satisfied clients worldwide'
+      },
+      {
+        number: '50',
+        suffix: '+',
+        label: 'Projects Completed',
+        description: 'Successfully delivered projects'
+      },
+      {
+        number: '5',
+        suffix: '★',
+        label: 'Average Rating',
+        description: 'Based on customer reviews'
+      }
+    ],
+    layout: 'horizontal',
+    alignment: 'center',
+    backgroundColor: '#f8fafc',
+    numberColor: '#1e40af',
+    labelColor: '#374151',
+    suffixColor: '#1e40af',
+    descriptionColor: '#6b7280',
+    numberSize: 'large',
+    labelSize: 'medium',
+    labelWeight: 'normal'
+  },
   cta: {
     heading: 'Ready to Get Started?',
     subtitle: 'Join thousands of satisfied customers and start building your dream website today.',
@@ -105,7 +139,7 @@ const defaultConfig: WebsiteConfig = {
     ],
     alignment: 'center'
   },
-  sectionOrder: ['announcement', 'navbar', 'hero', 'scrollingText', 'textArea', 'cards', 'cta', 'footer']
+  sectionOrder: ['announcement', 'navbar', 'hero', 'scrollingText', 'textArea', 'cards', 'stats', 'cta', 'footer']
 };
 
 export function WebsiteBuilder() {
@@ -121,6 +155,7 @@ export function WebsiteBuilder() {
     scrollingText: false,
     cards: false,
     textArea: false,
+    stats: false,
     cta: false,
     footer: false
   });
@@ -153,6 +188,7 @@ export function WebsiteBuilder() {
       scrollingText: '🌮 Scrolling Text',
       textArea: '🍜 Text Section',
       cards: '🍰 Cards Section',
+      stats: '📊 Statistics',
       cta: '🍩 Call-to-Action',
       footer: '🍪 Footer'
     };
@@ -528,6 +564,30 @@ export function WebsiteBuilder() {
                   <TextAreaEditor
                     config={config.textArea}
                     onChange={(updates) => updateConfig('textArea', updates)}
+                  />
+                </CardContent>
+              )}
+            </Card>
+
+            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('stats')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">📊 Statistics</CardTitle>
+                  {expandedSections.stats ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
+              </CardHeader>
+              {expandedSections.stats && (
+                <CardContent>
+                  <StatsEditor
+                    config={config}
+                    onConfigChange={setConfig}
                   />
                 </CardContent>
               )}

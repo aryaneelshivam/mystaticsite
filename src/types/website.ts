@@ -104,6 +104,29 @@ export interface FooterConfig {
   alignment: 'left' | 'center' | 'right';
 }
 
+export interface StatItem {
+  number: string;
+  suffix?: string;
+  label: string;
+  description?: string;
+}
+
+export interface StatsConfig {
+  enabled: boolean;
+  items: StatItem[];
+  layout: 'horizontal' | 'vertical';
+  alignment: 'left' | 'center' | 'right';
+  backgroundColor: string;
+  numberColor: string;
+  labelColor: string;
+  suffixColor?: string;
+  descriptionColor?: string;
+  numberSize: 'small' | 'medium' | 'large';
+  labelSize: 'small' | 'medium' | 'large';
+  labelWeight: 'light' | 'normal' | 'bold';
+  numberFont?: string;
+}
+
 export interface SEOConfig {
   enabled: boolean;
   title: string;
@@ -124,7 +147,7 @@ export interface SEOConfig {
   favicon: string;
 }
 
-export type SectionType = 'announcement' | 'navbar' | 'hero' | 'scrollingText' | 'textArea' | 'cards' | 'cta' | 'footer';
+export type SectionType = 'announcement' | 'navbar' | 'hero' | 'scrollingText' | 'textArea' | 'cards' | 'stats' | 'cta' | 'footer';
 
 export interface WebsiteConfig {
   navbar: NavbarConfig;
@@ -133,6 +156,7 @@ export interface WebsiteConfig {
   scrollingText: ScrollingTextConfig;
   cards: CardsConfig;
   textArea: TextAreaConfig;
+  stats: StatsConfig;
   cta: CTAConfig;
   footer: FooterConfig;
   sectionOrder: SectionType[];
