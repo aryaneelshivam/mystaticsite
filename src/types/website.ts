@@ -127,6 +127,22 @@ export interface StatsConfig {
   numberFont?: string;
 }
 
+export interface MapsConfig {
+  enabled: boolean;
+  embedUrl: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  width: 'small' | 'medium' | 'large';
+  height: 'small' | 'medium' | 'large';
+  alignment: 'left' | 'center' | 'right';
+  titleAlignment: 'left' | 'center' | 'right';
+  descriptionAlignment: 'left' | 'center' | 'right';
+  titleFont: string;
+  subtitleFont: string;
+  descriptionFont: string;
+}
+
 export interface SEOConfig {
   enabled: boolean;
   title: string;
@@ -147,7 +163,7 @@ export interface SEOConfig {
   favicon: string;
 }
 
-export type SectionType = 'announcement' | 'navbar' | 'hero' | 'scrollingText' | 'textArea' | 'cards' | 'stats' | 'cta' | 'footer';
+export type SectionType = 'announcement' | 'navbar' | 'hero' | 'scrollingText' | 'textArea' | 'cards' | 'stats' | 'maps' | 'cta' | 'footer';
 
 export interface WebsiteConfig {
   navbar: NavbarConfig;
@@ -157,6 +173,7 @@ export interface WebsiteConfig {
   cards: CardsConfig;
   textArea: TextAreaConfig;
   stats: StatsConfig;
+  maps: MapsConfig;
   cta: CTAConfig;
   footer: FooterConfig;
   sectionOrder: SectionType[];

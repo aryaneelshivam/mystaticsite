@@ -106,6 +106,62 @@ export function CodeGenerator({ config }: CodeGeneratorProps) {
         </div>
     </section>` : '';
       
+      case 'maps':
+        return config.maps.enabled ? `<section class="maps-section" style="background-color: white; padding: 4rem 0;">
+        <div class="max-w-6xl mx-auto px-6">
+            ${config.maps.title ? `
+                <div class="text-center mb-8" style="text-align: ${config.maps.titleAlignment === 'left' ? 'left' : config.maps.titleAlignment === 'right' ? 'right' : 'center'};">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4" style="font-family: ${config.maps.titleFont};">
+                        ${config.maps.title}
+                    </h2>
+                    ${config.maps.subtitle ? `
+                        <p class="text-lg text-gray-600 max-w-2xl mx-auto" style="font-family: ${config.maps.subtitleFont};">
+                            ${config.maps.subtitle}
+                        </p>
+                    ` : ''}
+                </div>
+            ` : ''}
+            
+            ${config.maps.embedUrl ? `
+            <div class="flex justify-center" style="justify-content: ${config.maps.alignment === 'left' ? 'flex-start' : config.maps.alignment === 'right' ? 'flex-end' : 'center'};">
+                <div class="rounded-lg overflow-hidden shadow-lg border border-gray-200" style="width: ${config.maps.width === 'small' ? '400px' : config.maps.width === 'large' ? '800px' : '600px'}; height: ${config.maps.height === 'small' ? '300px' : config.maps.height === 'large' ? '500px' : '400px'};">
+                    <iframe
+                        src="${config.maps.embedUrl}"
+                        width="100%"
+                        height="100%"
+                        style="border: 0;"
+                        allowfullscreen
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="${config.maps.title || 'Google Maps'}"
+                    ></iframe>
+                </div>
+            </div>
+            ` : `
+            <div class="flex justify-center" style="justify-content: ${config.maps.alignment === 'left' ? 'flex-start' : config.maps.alignment === 'right' ? 'flex-end' : 'center'};">
+                <div class="bg-gray-100 rounded-lg p-8 border-2 border-dashed border-gray-300 text-center" style="width: ${config.maps.width === 'small' ? '400px' : config.maps.width === 'large' ? '800px' : '600px'}; height: ${config.maps.height === 'small' ? '300px' : config.maps.height === 'large' ? '500px' : '400px'};">
+                    <div class="text-gray-500 mb-4">
+                        <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Google Maps</h3>
+                    <p class="text-gray-500">Configure your map settings to display an interactive Google Map</p>
+                </div>
+            </div>
+            `}
+            
+            ${config.maps.description ? `
+                <div class="mt-6" style="text-align: ${config.maps.descriptionAlignment === 'left' ? 'left' : config.maps.descriptionAlignment === 'right' ? 'right' : 'center'};">
+                    <p class="text-gray-600 max-w-2xl mx-auto" style="font-family: ${config.maps.descriptionFont};">
+                        ${config.maps.description}
+                    </p>
+                </div>
+            ` : ''}
+        </div>
+    </section>` : '';
+      
       case 'cta':
         return `<section class="cta-section" style="background-color: ${config.cta.backgroundColor}; color: ${config.cta.textColor}; padding: 4rem 1.5rem;">
         <div class="cta-content" style="max-width: 64rem; margin: 0 auto;">
@@ -940,6 +996,43 @@ body {
     line-height: 1.4;
 }
 
+/* Maps Section */
+.maps-section {
+    background: white;
+    padding: 4rem 0;
+}
+
+.maps-section .max-w-6xl {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.maps-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.maps-section p {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.maps-iframe-container {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.maps-iframe-container iframe {
+    border: 0;
+    width: 100%;
+    height: 100%;
+}
+
 /* CTA Section */
 .cta-section {
     background: ${config.cta.backgroundColor};
@@ -1064,6 +1157,14 @@ body {
     .stats-container {
         flex-direction: column;
         text-align: center;
+    }
+    
+    .maps-section .max-w-6xl {
+        padding: 0 1rem;
+    }
+    
+    .maps-section h2 {
+        font-size: 1.75rem;
     }
     
     .cta-buttons {

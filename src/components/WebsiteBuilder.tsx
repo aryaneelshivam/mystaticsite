@@ -16,6 +16,7 @@ import { ScrollingTextEditor } from './editors/ScrollingTextEditor';
 import { CardsEditor } from './editors/CardsEditor';
 import { TextAreaEditor } from './editors/TextAreaEditor';
 import { StatsEditor } from './editors/StatsEditor';
+import { MapsEditor } from './editors/MapsEditor';
 import { CTAEditor } from './editors/CTAEditor';
 import { FooterEditor } from './editors/FooterEditor';
 import { WebsitePreview } from './WebsitePreview';
@@ -108,6 +109,21 @@ const defaultConfig: WebsiteConfig = {
     labelSize: 'medium',
     labelWeight: 'normal'
   },
+  maps: {
+    enabled: false,
+    embedUrl: '',
+    title: 'Find Us',
+    subtitle: 'Visit our location',
+    description: 'We are conveniently located in the heart of the city. Come visit us!',
+    width: 'medium',
+    height: 'medium',
+    alignment: 'center',
+    titleAlignment: 'center',
+    descriptionAlignment: 'center',
+    titleFont: 'Inter',
+    subtitleFont: 'Inter',
+    descriptionFont: 'Inter'
+  },
   cta: {
     heading: 'Ready to Get Started?',
     subtitle: 'Join thousands of satisfied customers and start building your dream website today.',
@@ -139,7 +155,7 @@ const defaultConfig: WebsiteConfig = {
     ],
     alignment: 'center'
   },
-  sectionOrder: ['announcement', 'navbar', 'hero', 'scrollingText', 'textArea', 'cards', 'stats', 'cta', 'footer']
+  sectionOrder: ['announcement', 'navbar', 'hero', 'scrollingText', 'textArea', 'cards', 'stats', 'maps', 'cta', 'footer']
 };
 
 export function WebsiteBuilder() {
@@ -156,6 +172,7 @@ export function WebsiteBuilder() {
     cards: false,
     textArea: false,
     stats: false,
+    maps: false,
     cta: false,
     footer: false
   });
@@ -188,7 +205,8 @@ export function WebsiteBuilder() {
       scrollingText: '🌮 Scrolling Text',
       textArea: '🍜 Text Section',
       cards: '🍰 Cards Section',
-      stats: '📊 Statistics',
+      stats: '🧠 Statistics',
+      maps: '🌍 Google Maps',
       cta: '🍩 Call-to-Action',
       footer: '🍪 Footer'
     };
@@ -575,7 +593,7 @@ export function WebsiteBuilder() {
                 onClick={() => toggleSection('stats')}
               >
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium">📊 Statistics</CardTitle>
+                  <CardTitle className="text-sm font-medium">🧠 Statistics</CardTitle>
                   {expandedSections.stats ? (
                     <ChevronDown className="w-4 h-4" />
                   ) : (
@@ -588,6 +606,30 @@ export function WebsiteBuilder() {
                   <StatsEditor
                     config={config}
                     onConfigChange={setConfig}
+                  />
+                </CardContent>
+              )}
+            </Card>
+
+            <Card className="editor-section shadow-md transition-smooth hover:shadow-lg">
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => toggleSection('maps')}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium">🌍 Google Maps</CardTitle>
+                  {expandedSections.maps ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </div>
+              </CardHeader>
+              {expandedSections.maps && (
+                <CardContent>
+                  <MapsEditor
+                    config={config.maps}
+                    onChange={(updates) => updateConfig('maps', updates)}
                   />
                 </CardContent>
               )}

@@ -1,5 +1,6 @@
 import { WebsiteConfig, SectionType } from '@/types/website';
 import { Stats } from './Stats';
+import { Maps } from './Maps';
 
 interface WebsitePreviewProps {
   config: WebsiteConfig;
@@ -252,6 +253,9 @@ export function WebsitePreview({ config, viewMode }: WebsitePreviewProps) {
 
       case 'stats':
         return <Stats key="stats" config={config} />;
+
+      case 'maps':
+        return <Maps key="maps" config={config.maps} />;
 
       case 'cta':
         const getButtonAlignmentClass = (alignment: 'left' | 'center' | 'right') => {
